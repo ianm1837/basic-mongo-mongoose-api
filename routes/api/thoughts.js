@@ -3,13 +3,21 @@ const thoughts = require('../../controllers/thoughts');
 
 // you are here: /api/thoughts
 
-//prettier-ignore
-router.route('/')
-  .get(thoughts.getAllThoughts)
-  .post(thoughts.createThought);
+router
+  .route('/')
+    .get(thoughts.getAllThoughts)
+    .post(thoughts.createThought);
 
 router
   .route('/:id')
-  .get(thoughts.getThoughtById)
-  .put(thoughts.updateThought)
-  .delete(thoughts.deleteThought);
+    .get(thoughts.getThoughtById)
+    .put(thoughts.updateThought)
+    .delete(thoughts.deleteThought);
+
+router
+  .route('/:thoughtId/reactions')
+    .post(thoughts.createReaction)
+    .put(thoughts.updateReaction)
+    .delete(thoughts.deleteReaction);
+
+module.exports = router;

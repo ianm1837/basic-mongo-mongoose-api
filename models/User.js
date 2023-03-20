@@ -1,7 +1,5 @@
-const mongoose = require('mongoose');
+const { Schema, SchemaTypes , model } = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
-
-const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
   username: {
@@ -14,22 +12,20 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    match: [isEmail, 'Please enter a valid e-mail address'],
-  },
-  thoughts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Thought',
+    validate: {
+      validator: isEmail,
+      message: 'Please enter a valid e-mail address',
     },
-  ],
+  },
+  thoughts: [SchemaTypes.ObjectId],
   friends: [
     {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: SchemaTypes.ObjectId,
+      ref: 'user',
     },
   ],
 });
 
-const UserModel = mongoose.model('User', UserSchema);
+const userModel = model('user', UserSchema);
 
-module.exports = UserModel;
+module.exports = userModel;

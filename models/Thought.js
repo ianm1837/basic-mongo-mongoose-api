@@ -8,7 +8,7 @@ function dateFormat(date) {
   console.log(date);
 }
 
-const UserSchema = new Schema({
+const ThoughtSchema = new Schema({
   thoughtText: {
     type: String,
     required: true,
@@ -27,6 +27,6 @@ const UserSchema = new Schema({
   reactions: [ReactionSchema],
 });
 
-const UserModel = mongoose.model('User', UserSchema);
+const ThoughtModel = mongoose.model('thought', ThoughtSchema);
 
-module.exports = UserModel;
+module.exports = ThoughtModel;

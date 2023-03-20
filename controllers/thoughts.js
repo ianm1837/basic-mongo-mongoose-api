@@ -32,10 +32,24 @@ module.exports = {
       });
   },
 
-  createThought(req, res) {
-    Thought.create(req.body).then((dbThoughtData) => {
-      res.status(200).json(dbThoughtData._id);
-    });
+  async createThought(req, res) {
+    try {
+
+      let thought = await Thought.create(req.body);
+
+      let user = await User.findOne({ _id: req.body.username });
+
+      user.thoughts.push(thought._id);
+
+      let updatedUser = await user.save();
+
+      res.status(200).json(updatedUser);
+
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400).json(err);
+    }
   },
 
   updateThought(req, res) {
@@ -63,4 +77,53 @@ module.exports = {
       })
       .catch((err) => res.status(400).json(err));
   },
-};
+  
+  async createReaction(req, res) {
+    try{
+      let thought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $push: { reactions: req.body } }, { new: true });
+
+      let updatedThought = await thought.save();
+
+      res.status(200).json(updatedThought);
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400).json(err);
+    }
+  },
+
+  async updateReaction(req, res) {
+
+    console.log(req.body.reactionId)
+
+    try{
+      let thought = await Thought.findOneAndUpdate(
+        { "_id": req.params.thoughtId ,"reactions._id": req.body.reactionId },
+        { $set: { 'reactions.$.reactionBody': req.body.reactionBody } },
+        { new: true }
+        );
+
+      res.status(200).json(thought);
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400).json(err);
+    }
+  },
+
+  async deleteReaction(req, res) {
+    try{
+      let thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId, "reactions.reactionId": req.body.reactionId },
+        { $pull: { reactions: req.body.reactionId } },
+        { new: true }
+        );
+
+      res.status(200).json({ message: 'Reaction deleted' });
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400).json(err);
+    }
+  }
+};  
