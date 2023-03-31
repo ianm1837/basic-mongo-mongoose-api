@@ -37,7 +37,7 @@ module.exports = {
 
       let thought = await Thought.create(req.body);
 
-      let user = await User.findOne({ _id: req.body.username });
+      let user = await User.findOne({ username: req.body.username });
 
       user.thoughts.push(thought._id);
 
@@ -73,6 +73,13 @@ module.exports = {
           res.status(404).json({ message: 'No thought found with this id!' });
           return;
         }
+        User.findOneAndUpdate(
+          { username: dbThoughtData.username },
+          { $pull: { thoughts: req.params.id } },
+          { new: true }
+        ).then((data) => {
+          // console.log(data);
+        });
         res.json(dbThoughtData);
       })
       .catch((err) => res.status(400).json(err));
@@ -114,12 +121,12 @@ module.exports = {
   async deleteReaction(req, res) {
     try{
       let thought = await Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId, "reactions.reactionId": req.body.reactionId },
-        { $pull: { reactions: req.body.reactionId } },
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: { _id: req.body.reactionId } } },
         { new: true }
         );
 
-      res.status(200).json({ message: 'Reaction deleted' });
+      res.status(200).json(thought);
     }
     catch (err) {
       console.log(err);
