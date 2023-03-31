@@ -1,3 +1,5 @@
 db_data
 .vscode
 docker-compose.yml
+.env
+node_modules
