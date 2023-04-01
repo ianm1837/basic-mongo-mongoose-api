@@ -8,6 +8,8 @@ This is a the demonstrate how to configure and use mongodb using mongoose to be 
 
 Link to video demonstration: 
 
+https://youtu.be/MeCeCXGhp8w
+
 
 ## Table of Contents
 
